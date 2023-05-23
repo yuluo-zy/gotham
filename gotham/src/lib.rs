@@ -59,7 +59,7 @@ pub use mime;
 pub use tokio_rustls::rustls;
 
 use futures_util::TryFutureExt;
-use hyper::server::conn::Http;
+use hyper::server::conn::http1;
 use std::future::Future;
 use std::io;
 use std::net::ToSocketAddrs;
@@ -121,7 +121,7 @@ where
     Wrapped: Unpin + AsyncRead + AsyncWrite + Send + 'static,
     Wrap: Fn(TcpStream) -> F,
 {
-    let protocol = Arc::new(Http::new());
+    let protocol = Arc::new(http1::Builder::new());
     let gotham_service = GothamService::new(new_handler);
 
     loop {
