@@ -56,7 +56,8 @@ where
 mod tests {
     use super::*;
     use crate::state::State;
-    use hyper::{Body, Response};
+    use hyper:: Response;
+    use http_body::Body;
 
     fn handler(_: State) -> (State, Response<Body>) {
         unimplemented!()

@@ -1,5 +1,4 @@
-use hyper::body::HttpBody;
-use hyper::{Body, Response};
+use hyper::{ Response};
 use serde::{Deserialize, Deserializer};
 
 use crate::router::response::StaticResponseExtender;
@@ -20,7 +19,7 @@ use crate::state::{State, StateData};
 /// # Examples
 ///
 /// ```rust
-/// # use hyper::{Body, Response, StatusCode};
+/// # use hyper::{ Response, StatusCode};
 /// # use gotham::state::{FromState, State};
 /// # use gotham::helpers::http::response::create_response;
 /// # use gotham::router::{build_simple_router, Router};
@@ -34,8 +33,9 @@ use crate::state::{State, StateData};
 ///     slug: String,
 /// }
 ///
-/// fn handler(mut state: State) -> (State, Response<Body>) {
-///     let MyPathParams { id, slug } = MyPathParams::take_from(&mut state);
+/// fn handler(mut state: State) -> (State, Response<Incoming>) {
+///     use hyper::body::Incoming;
+/// let MyPathParams { id, slug } = MyPathParams::take_from(&mut state);
 ///     let body = format!("id = {}, slug = {}", id, slug);
 ///
 ///     let response = create_response(

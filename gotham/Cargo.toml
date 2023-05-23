@@ -54,6 +54,11 @@ tokio = { version = "1.28.0", features = ["net", "rt-multi-thread", "time", "fs"
 tokio-rustls = { version = "0.23", optional = true }
 uuid = { version = "1.0", features = ["v4"] }
 
+http-body = "1.0.0-rc.2"
+http-body-util = "0.1.0-rc.2"
+pin-project-lite = "0.2.7"
+sync_wrapper = "0.1.1"
+
 [dev-dependencies]
 futures-executor = "0.3.14"
 tokio = { version = "1.28.0", features = ["macros", "test-util"] }
