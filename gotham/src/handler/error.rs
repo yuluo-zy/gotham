@@ -4,7 +4,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-use hyper::{Body, Response, StatusCode};
+use hyper::{ Response, StatusCode};
 use log::{debug, trace};
 
 use crate::handler::IntoResponse;

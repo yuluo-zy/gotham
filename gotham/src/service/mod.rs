@@ -8,7 +8,7 @@ use std::task::{self, Poll};
 
 use futures_util::future::{BoxFuture, FutureExt};
 use hyper::service::Service;
-use hyper::{Body, Request, Response};
+use hyper::{Request, Response};
 
 use crate::handler::NewHandler;
 use crate::state::State;
@@ -16,6 +16,7 @@ use crate::state::State;
 mod trap;
 
 pub use trap::call_handler;
+use crate::core::body::Body;
 
 /// Wraps a `NewHandler` which will be used to serve requests. Used in `gotham::os::*` to bind
 /// incoming connections to `ConnectedGothamService` values.

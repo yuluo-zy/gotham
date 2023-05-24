@@ -12,7 +12,7 @@ use std::sync::Arc;
 
 use bytes::Bytes;
 use futures_util::future::{self, FutureExt};
-use hyper::{Body, Response, StatusCode};
+use hyper::{ Response, StatusCode};
 use mime::{self, Mime};
 
 use crate::helpers::http::response;
@@ -23,12 +23,13 @@ pub use assets::*;
 
 mod error;
 pub use error::{HandlerError, MapHandlerError, MapHandlerErrorFuture};
+use crate::core::body::Body;
 
 /// A type alias for the results returned by async fns that can be passed to to_async.
-pub type HandlerResult = std::result::Result<(State, Response<Body>), (State, HandlerError)>;
+pub type HandlerResult = Result<(State, Response<Body>), (State, HandlerError)>;
 
 /// A type alias for the results returned by async fns that can be passed to to_async_borrowing.
-pub type SimpleHandlerResult = std::result::Result<Response<Body>, HandlerError>;
+pub type SimpleHandlerResult = Result<Response<Body>, HandlerError>;
 
 /// A type alias for the trait objects returned by `HandlerService`.
 ///
@@ -59,6 +60,7 @@ pub type HandlerFuture = dyn Future<Output = HandlerResult> + Send;
 /// # use hyper::{Body, Response};
 /// # use gotham::handler::Handler;
 /// # use gotham::state::State;
+/// # use gotham::core::body::Body;
 /// #
 /// # fn main() {
 /// fn my_handler(_state: State) -> (State, Response<Body>) {
