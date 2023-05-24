@@ -11,6 +11,8 @@ pub(super) struct RequestId {
     val: String,
 }
 
+
+
 /// Sets a unique identifier for the request if it has not already been stored.
 ///
 /// The unique identifier chosen depends on the the request headers:
@@ -20,8 +22,9 @@ pub(super) struct RequestId {
 ///
 /// This function is invoked by `GothamService` before handing control to its `Router`, to ensure
 /// that a value for `RequestId` is always available.
-pub(crate) fn set_request_id<'a>(state: &'a mut State) -> &'a str {
+pub(crate) fn set_request_id(state: &mut State) -> &str {
     if !state.has::<RequestId>() {
+        // 通过类型 id 来查询数据的
         let request_id = match HeaderMap::borrow_from(state).get("X-Request-ID") {
             Some(ex_req_id) => {
                 let id = String::from_utf8(ex_req_id.as_bytes().into()).unwrap();

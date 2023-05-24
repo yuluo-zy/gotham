@@ -11,6 +11,7 @@ use std::task::{Context, Poll};
 use sync_wrapper::SyncWrapper;
 use crate::core::error::BoxError;
 use crate::core::error::Error;
+use crate::helpers::utils::try_downcast;
 
 
 type BoxBody = http_body_util::combinators::UnsyncBoxBody<Bytes, Error>;
@@ -23,18 +24,6 @@ fn boxed<B>(body: B) -> BoxBody
     try_downcast(body).unwrap_or_else(|body| body.map_err(Error::new).boxed_unsync())
 }
 
-pub(crate) fn try_downcast<T, K>(k: K) -> Result<T, K>
-    where
-        T: 'static,
-        K: Send + 'static,
-{
-    let mut k = Some(k);
-    if let Some(k) = <dyn std::any::Any>::downcast_mut::<Option<T>>(&mut k) {
-        Ok(k.take().unwrap())
-    } else {
-        Err(k.unwrap())
-    }
-}
 
 /// The body type used in axum requests and responses.
 #[derive(Debug)]

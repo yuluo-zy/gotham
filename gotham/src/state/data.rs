@@ -30,7 +30,11 @@ use crate::core::body::Body;
 /// #   });
 /// # }
 /// ```
+
+
 pub trait StateData: Any + Send {}
+
+// TODO: Body 在 hyper 0.14 中 是 没有限定 !sync 的, 当前的实现是 允许他进行跨线程访问
 
 impl StateData for Body {}
 impl StateData for Method {}

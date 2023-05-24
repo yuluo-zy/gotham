@@ -7,12 +7,13 @@ mod request_id;
 
 use hyper::http::request;
 use hyper::upgrade::OnUpgrade;
-use hyper::{Body, Request};
+use hyper::{ Request};
 use log::{debug, trace};
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 use std::hash::{BuildHasherDefault, Hasher};
 use std::net::SocketAddr;
+use crate::core::body::Body;
 
 pub use crate::state::client_addr::client_addr;
 pub use crate::state::data::StateData;
@@ -31,6 +32,11 @@ pub(crate) use crate::state::request_id::set_request_id;
 struct IdHasher(u64);
 
 impl Hasher for IdHasher {
+    #[inline]
+    fn finish(&self) -> u64 {
+        self.0
+    }
+
     fn write(&mut self, _: &[u8]) {
         unreachable!("TypeId calls write_u64");
     }
@@ -39,12 +45,9 @@ impl Hasher for IdHasher {
     fn write_u64(&mut self, id: u64) {
         self.0 = id;
     }
-
-    #[inline]
-    fn finish(&self) -> u64 {
-        self.0
-    }
 }
+
+// TODO:: 可灰度错误
 
 /// Provides storage for request state, and stores one item of each type. The types used for
 /// storage must implement the [`StateData`] trait to allow its storage, which is usually done
@@ -71,6 +74,8 @@ impl Hasher for IdHasher {
 pub struct State {
     data: HashMap<TypeId, Box<dyn Any + Send>, BuildHasherDefault<IdHasher>>,
 }
+
+// todo:: State 的生命周期问题
 
 impl State {
     /// Creates a new, empty `State` container. This is for internal Gotham use, because the
@@ -112,6 +117,9 @@ impl State {
             body,
         ) = req.into_parts();
 
+        // 添加静态常量池
+
+        // 将 请求体 解包然后 进行复制
         state.put(RequestPathSegments::new(uri.path()));
         state.put(method);
         state.put(uri);
@@ -125,6 +133,7 @@ impl State {
 
         {
             let request_id = set_request_id(&mut state);
+            // 设置请求ID
             debug!(
                 "[DEBUG][{}][Thread][{:?}]",
                 request_id,
@@ -178,6 +187,7 @@ impl State {
     {
         let type_id = TypeId::of::<T>();
         trace!(" inserting record to state for type_id `{:?}`", type_id);
+        // 上下文的数据 都是存放到堆内存中， 相同类型大 数据会出现数值覆盖情况
         self.data.insert(type_id, Box::new(t));
     }
 
@@ -259,6 +269,8 @@ impl State {
     {
         let type_id = TypeId::of::<T>();
         trace!(" borrowing state data for type_id `{:?}`", type_id);
+
+        // 如果内部是 对应泛型实例， 则使用对应 的 引用返回数据， 返回借用， 是存在着
         self.data.get(&type_id).and_then(|b| b.downcast_ref::<T>())
     }
 
@@ -295,6 +307,7 @@ impl State {
     where
         T: StateData,
     {
+        // 直接返回对应的数据 而不是返回OPen的类型
         self.try_borrow()
             .expect("required type is not present in State container")
     }
@@ -439,7 +452,7 @@ impl State {
         self.data
             .remove(&type_id)
             .and_then(|b| b.downcast::<T>().ok())
-            .map(|b| *b)
+            .map(|b| *b) // 这个应该去去除 取出 map取出 需要判断这个是否 是 Option 类型
     }
 
     /// Moves a value out of the `State` storage and returns ownership.
