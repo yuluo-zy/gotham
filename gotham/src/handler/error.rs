@@ -6,6 +6,7 @@ use std::task::{Context, Poll};
 
 use hyper::{ Response, StatusCode};
 use log::{debug, trace};
+use crate::core::body::Body;
 
 use crate::handler::IntoResponse;
 use crate::helpers::http::response::create_empty_response;
