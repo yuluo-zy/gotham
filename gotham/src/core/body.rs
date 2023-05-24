@@ -65,6 +65,7 @@ impl Body {
             S::Error: Into<BoxError>,
     {
         Self::new(StreamBody {
+            // 使用静态版本来避免分配和锁定 Mutex 的开销。
             stream: SyncWrapper::new(stream),
         })
     }
@@ -109,13 +110,13 @@ impl http_body::Body for Body {
     }
 
     #[inline]
-    fn size_hint(&self) -> http_body::SizeHint {
-        self.0.size_hint()
+    fn is_end_stream(&self) -> bool {
+        self.0.is_end_stream()
     }
 
     #[inline]
-    fn is_end_stream(&self) -> bool {
-        self.0.is_end_stream()
+    fn size_hint(&self) -> http_body::SizeHint {
+        self.0.size_hint()
     }
 }
 
