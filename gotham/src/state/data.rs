@@ -2,13 +2,14 @@ use std::any::Any;
 
 use cookie::CookieJar;
 use hyper::upgrade::OnUpgrade;
-use hyper::{Body, HeaderMap, Method, Uri, Version};
+use hyper::{HeaderMap, Method, Uri, Version};
 
 use crate::helpers::http::request::path::RequestPathSegments;
 use crate::state::request_id::RequestId;
 
 #[cfg(feature = "derive")]
 pub use gotham_derive::StateData;
+use crate::core::body::Body;
 
 /// A marker trait for types that can be stored in `State`.
 ///

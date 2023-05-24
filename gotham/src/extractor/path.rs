@@ -1,5 +1,7 @@
-use hyper::{ Response};
+use hyper::{Response};
+use hyper::body::Body as HttpBody;
 use serde::{Deserialize, Deserializer};
+use crate::core::body::Body;
 
 use crate::router::response::StaticResponseExtender;
 use crate::state::{State, StateData};
@@ -24,6 +26,7 @@ use crate::state::{State, StateData};
 /// # use gotham::helpers::http::response::create_response;
 /// # use gotham::router::{build_simple_router, Router};
 /// # use gotham::prelude::*;
+/// # use gotham::core::body::Body;
 /// # use gotham::test::TestServer;
 /// # use serde::Deserialize;
 /// #
@@ -33,7 +36,7 @@ use crate::state::{State, StateData};
 ///     slug: String,
 /// }
 ///
-/// fn handler(mut state: State) -> (State, Response<Incoming>) {
+/// fn handler(mut state: State) -> (State, Response<Body>) {
 ///     use hyper::body::Incoming;
 /// let MyPathParams { id, slug } = MyPathParams::take_from(&mut state);
 ///     let body = format!("id = {}, slug = {}", id, slug);
@@ -69,18 +72,17 @@ use crate::state::{State, StateData};
 /// #   assert_eq!(body, "id = 1551, slug = ten-reasons-serde-is-amazing");
 /// # }
 pub trait PathExtractor<B>:
-    for<'de> Deserialize<'de> + StaticResponseExtender<ResBody = B> + StateData
-where
-    B: HttpBody,
-{
-}
+    // 指定一个更高级的生命周期
+    for<'de> Deserialize<'de> + StaticResponseExtender<ResBody=B> + StateData
+    where
+        B: HttpBody,
+{}
 
 impl<T, B> PathExtractor<B> for T
-where
-    B: HttpBody,
-    for<'de> T: Deserialize<'de> + StaticResponseExtender<ResBody = B> + StateData,
-{
-}
+    where
+        B: HttpBody,
+        for<'de> T: Deserialize<'de> + StaticResponseExtender<ResBody=B> + StateData,
+{}
 
 /// A `PathExtractor` that does not extract/store any data from the `Request` path.
 ///
@@ -93,8 +95,8 @@ pub struct NoopPathExtractor;
 // we can explicitly do nothing.
 impl<'de> Deserialize<'de> for NoopPathExtractor {
     fn deserialize<D>(_de: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         Ok(NoopPathExtractor)
     }

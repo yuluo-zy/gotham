@@ -52,7 +52,7 @@ pub(crate) enum ExtractorError {
     ///
     ///     // These variants are not supported, as there is no possible source for the values
     ///     // required to construct them.
-    ///     NewtypeVariant(i32),
+    ///     NewTypeVariant(i32),
     ///     TupleVariant(i32, i32, i32),
     ///     StructVariant { i: i32 },
     /// }
@@ -179,12 +179,12 @@ macro_rules! reject_value_type {
 ///
 /// See `from_segment_mapping` and `from_query_string` for how the values are constructed.
 trait ExtractorDataSource<'a> {
-    type Iterator: Iterator<Item = (&'a str, Self::ValueIterator)>;
-    type ValueIterator: IntoIterator<Item = &'a Self::Value>;
+    type Iterator<'b>: Iterator<Item = (&'a str, Self::ValueIterator<'b>)>;
+    type ValueIterator<'b>: IntoIterator<Item = &'b Self::Value>;
     type Value: AsRef<str> + 'a + ?Sized;
 
     /// Returns the next value from the underlying iterator.
-    fn next(&mut self) -> Option<(&'a str, Self::ValueIterator)>;
+    fn next<'b>(&'b mut self) -> Option<(&'a str, Self::ValueIterator<'b>)>;
 }
 
 /// Concrete type which implements `ExtractorDataSource`. See `from_segment_mapping` and

@@ -46,7 +46,7 @@ pub mod plain;
 /// Functions for creating a Gotham service using HTTPS.
 #[cfg(feature = "rustls")]
 pub mod tls;
-mod core;
+pub mod core;
 
 /// Re-export anyhow
 pub use anyhow;

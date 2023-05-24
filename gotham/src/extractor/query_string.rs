@@ -1,6 +1,6 @@
-use hyper::body::HttpBody;
-use hyper::{Body, Response};
+use hyper::{Response};
 use serde::{Deserialize, Deserializer};
+use crate::core::body::Body;
 
 use crate::router::response::StaticResponseExtender;
 use crate::state::{State, StateData};
@@ -20,14 +20,14 @@ use crate::state::{State, StateData};
 /// # Examples
 ///
 /// ```rust
-/// # use hyper::{Body, Response, StatusCode};
+/// # use hyper::{Response, StatusCode};
 /// # use gotham::state::{FromState, State};
 /// # use gotham::helpers::http::response::create_response;
 /// # use gotham::router::{build_simple_router, Router};
 /// # use gotham::prelude::*;
 /// # use gotham::test::TestServer;
 /// # use serde::Deserialize;
-/// #
+/// # use gotham::core::body::Body;
 /// #[derive(Deserialize, StateData, StaticResponseExtender)]
 /// struct MyQueryParams {
 ///     x: i32,
@@ -43,7 +43,8 @@ use crate::state::{State, StateData};
 /// }
 ///
 /// fn handler(state: State) -> (State, Response<Body>) {
-///     let &MyQueryParams { x, y } = MyQueryParams::borrow_from(&state);
+///
+/// let &MyQueryParams { x, y } = MyQueryParams::borrow_from(&state);
 ///     let body = format!("x = {}, y = {:?}", x, y);
 ///
 ///     let response = create_response(
