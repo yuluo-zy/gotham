@@ -452,7 +452,7 @@ impl State {
         self.data
             .remove(&type_id)
             .and_then(|b| b.downcast::<T>().ok())
-            .map(|b| *b) // 这个应该去去除 取出 map取出 需要判断这个是否 是 Option 类型
+            .map(|b| *b) // 转换成 option<T>
     }
 
     /// Moves a value out of the `State` storage and returns ownership.

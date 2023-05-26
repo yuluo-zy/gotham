@@ -63,14 +63,14 @@ where
     type Error = anyhow::Error;
     type Future = BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
-    fn poll_ready(
-        &mut self,
-        _cx: &mut task::Context<'_>,
-    ) -> Poll<std::result::Result<(), Self::Error>> {
-        Poll::Ready(Ok(()))
-    }
+    // fn poll_ready(
+    //     &mut self,
+    //     _cx: &mut task::Context<'_>,
+    // ) -> Poll<Result<(), Self::Error>> {
+    //     Poll::Ready(Ok(()))
+    // }
 
-    fn call<'a>(&'a mut self, req: Request<Body>) -> Self::Future {
+    fn call(&mut self, req: Request<Body>) -> Self::Future {
         let state = State::from_request(req, self.client_addr);
         call_handler(self.handler.clone(), AssertUnwindSafe(state)).boxed()
     }

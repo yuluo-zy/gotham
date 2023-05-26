@@ -1,9 +1,10 @@
 //! Helpers for HTTP response generation
 
 use hyper::header::{CONTENT_TYPE, LOCATION};
-use hyper::{Body, Method, Response, StatusCode};
+use hyper::{Method, Response, StatusCode};
 use mime::Mime;
 use std::borrow::Cow;
+use crate::core::body::Body;
 
 use crate::helpers::http::header::X_REQUEST_ID;
 use crate::state::{request_id, FromState, State};
@@ -21,12 +22,13 @@ use crate::state::{request_id, FromState, State};
 /// # extern crate hyper;
 /// # extern crate mime;
 /// #
-/// # use hyper::{Body, Response, StatusCode};
+/// # use hyper::{Response, StatusCode};
 /// # use hyper::header::{CONTENT_LENGTH, CONTENT_TYPE};
 /// # use gotham::state::State;
 /// # use gotham::helpers::http::header::X_REQUEST_ID;
 /// # use gotham::helpers::http::response::create_response;
 /// # use gotham::test::TestServer;
+/// # use gotham::core::body::Body;
 /// #
 /// static BODY: &'static [u8] = b"Hello, world!";
 ///
@@ -85,7 +87,7 @@ where
 /// # extern crate gotham;
 /// # extern crate hyper;
 /// #
-/// # use hyper::{Body, Response, StatusCode};
+/// # use hyper::{ Response, StatusCode};
 /// # use gotham::state::State;
 /// # use gotham::helpers::http::response::create_empty_response;
 /// # use gotham::test::TestServer;

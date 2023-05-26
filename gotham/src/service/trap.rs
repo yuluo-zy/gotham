@@ -4,8 +4,9 @@
 use std::panic::{catch_unwind, AssertUnwindSafe, UnwindSafe};
 
 use futures_util::future::FutureExt;
-use hyper::{Body, Response, StatusCode};
+use hyper::{ Response, StatusCode};
 use log::error;
+use crate::core::body::Body;
 
 use crate::handler::{Handler, HandlerError, IntoResponse, NewHandler};
 use crate::state::{request_id, State};

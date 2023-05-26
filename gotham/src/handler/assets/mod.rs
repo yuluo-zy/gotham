@@ -11,7 +11,7 @@ use futures_util::stream::{self, TryStream, TryStreamExt};
 use futures_util::{ready, FutureExt, TryFutureExt};
 use httpdate::parse_http_date;
 use hyper::header::*;
-use hyper::{Body, Response, StatusCode};
+use hyper::{ Response, StatusCode};
 use log::debug;
 use mime::{self, Mime};
 use mime_guess::from_path;
@@ -33,6 +33,7 @@ use std::pin::Pin;
 use std::task::Poll;
 use std::time::UNIX_EPOCH;
 use std::{cmp, io};
+use crate::core::body::Body;
 
 /// Represents a handler for any files under a directory.
 #[derive(Clone)]

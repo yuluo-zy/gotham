@@ -35,7 +35,7 @@ pub type SimpleHandlerResult = Result<Response<Body>, HandlerError>;
 ///
 /// When the `Future` resolves to an error, the `(State, HandlerError)` value is used to generate
 /// an appropriate HTTP error response.
-pub type HandlerFuture = impl Future<Output = HandlerResult> + Send;
+pub type HandlerFuture = dyn Future<Output = HandlerResult> + Send;
 
 /// A `Handler` is an asynchronous function, taking a `State` value which represents the request
 /// and related runtime state, and returns a future which resolves to a response.
@@ -360,7 +360,7 @@ impl IntoResponse for Response<Body> {
     }
 }
 
-impl<T, E> IntoResponse for ::std::result::Result<T, E>
+impl<T, E> IntoResponse for Result<T, E>
 where
     T: IntoResponse,
     E: IntoResponse,
